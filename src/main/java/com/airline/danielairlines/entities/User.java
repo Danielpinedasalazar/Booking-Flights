@@ -39,6 +39,7 @@ public class User {
 
     private String providerId;
 
+    //Muchos usuarios pueden tener muchos roes
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_roles",

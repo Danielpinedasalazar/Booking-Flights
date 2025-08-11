@@ -24,9 +24,11 @@ public class Booking {
     @Column(unique = true, nullable = false)
     private String bookingReference;
 
+    //Muchas reservas pueden pertenecer a un usuario
     @ManyToOne
     private User user;
 
+    //Muchas reservas pueden pertenecer a un vuelo
     @ManyToOne
     private Flight flight;
 
@@ -35,6 +37,7 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     private BookingStatus bookingStatus;
 
+    //Una reserva puede pertencer a muchos pasageros
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
     private List<Passenger> passenger = new ArrayList<>();
 }

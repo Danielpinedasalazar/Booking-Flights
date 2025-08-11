@@ -17,6 +17,7 @@ public class Passenger {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    //Muchos pasageros pueden tener una reserva
     @ManyToOne
     @JoinColumn(name = "booking_id")
     private Booking booking;

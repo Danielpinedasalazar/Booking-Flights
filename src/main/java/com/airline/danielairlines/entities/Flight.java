@@ -28,10 +28,12 @@ public class Flight {
     @Enumerated(EnumType.STRING)
     private FlightStatus status;
 
+    //Muchos vuelos pertenecen a un aeropuerto de salida
     @ManyToOne
     @JoinColumn(name = "departure_airport_id")
     private Airport departureAirport;
 
+    //Muchos vuelos pertenecer a un aeropuerto de llegada
     @ManyToOne
     @JoinColumn(name = "arrival_airport_id")
     private Airport arrivalAirport;
@@ -42,9 +44,11 @@ public class Flight {
 
     private BigDecimal basePrice;
 
+    //Muchos vuelos pertencen a un piloto
     @ManyToOne
     private User assignedPilot;
 
+    //Un vuelo pertenece a muchas reservas
     @OneToMany(mappedBy = "flight")
     private List<Booking> bookings = new ArrayList<>();
 }
