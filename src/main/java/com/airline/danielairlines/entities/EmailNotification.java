@@ -34,4 +34,6 @@ public class EmailNotification {
     private LocalDateTime sendAt;
 
     private boolean isHtml;
+
+
 }

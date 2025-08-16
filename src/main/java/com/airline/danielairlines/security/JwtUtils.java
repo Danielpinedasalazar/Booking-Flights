@@ -16,7 +16,7 @@ import java.util.function.Function;
 @Service
 public class JwtUtils {
 
-    @Value("${jwtSecreteString")
+    @Value("${jwtSecreteString}")
     private String jwtSecreteString;
 
     private static final long EXPIRATION_TIME = 30L*24*60*60*1000; //30 DIAS EN MILISEGUNDOS

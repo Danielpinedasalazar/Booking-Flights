@@ -39,5 +39,5 @@ public class Booking {
 
     //Una reserva puede pertencer a muchos pasageros
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
-    private List<Passenger> passenger = new ArrayList<>();
+    private List<Passenger> passengers = new ArrayList<>();
 }
