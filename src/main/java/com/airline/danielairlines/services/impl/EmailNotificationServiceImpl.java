@@ -77,7 +77,7 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
     @Async
     public void sendWelcomeEmail(User user) {
         log.info("Sending welcome email to user: {}", user.getEmail());
-        String recipientEmail = user.getName();
+        String recipientEmail = user.getEmail();
         String subject = "Welcome to Daniel Airlines";
         String templateName = "welcome_user";
 

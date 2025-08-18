@@ -42,7 +42,7 @@ public class AuthFilter extends OncePerRequestFilter {
 
             try{
 
-                email = jwtUtils.generateToken(token);
+                email = jwtUtils.getUsernameFromToken(token);
 
             }catch(Exception ex){
                 AuthenticationException authenticationException = new BadCredentialsException(ex.getMessage());
