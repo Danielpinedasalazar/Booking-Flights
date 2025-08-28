@@ -43,11 +43,11 @@ public class UserServiceImpl implements UserService {
         User user = currentUser();
 
         if(userDTO.getName() != null && !userDTO.getName().isBlank()) {
-            user.setName(user.getName());
+            user.setName(userDTO.getName());
         }
 
         if(userDTO.getPhoneNumber() != null && !userDTO.getPhoneNumber().isBlank()) {
-            user.setPhoneNumber(user.getPhoneNumber());
+            user.setPhoneNumber(userDTO.getPhoneNumber());
         }
 
         if(userDTO.getPassword() != null && !userDTO.getPassword().isBlank()) {
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
 
         return Response.builder()
                 .statusCode(HttpStatus.OK.value())
-                .message("Account updated succesfully")
+                .message("Account updated successfully")
                 .build();
     }
 

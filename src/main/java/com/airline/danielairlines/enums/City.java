@@ -1,10 +1,13 @@
 package com.airline.danielairlines.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum City {
 
     //Colombia
-    MEDELLIN(Country.COLOMBIA),
-    BOGOTA(Country.COLOMBIA),
+    BOGOTA(Country.COL),
+    MEDELLIN(Country.COL),
 
     //Usa
     MIAMI(Country.USA),

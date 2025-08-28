@@ -1,7 +1,10 @@
 package com.airline.danielairlines.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum Country {
-    COLOMBIA,
+    COL,
     USA,
     UK,
 
