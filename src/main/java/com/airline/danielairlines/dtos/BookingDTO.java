@@ -23,5 +23,5 @@ public class BookingDTO {
 
     private BookingStatus bookingStatus;
 
-    private List<PassengerDTO> passenger;
+    private List<PassengerDTO> passengers;
 }

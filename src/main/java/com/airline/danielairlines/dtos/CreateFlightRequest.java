@@ -18,8 +18,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CreateFlightRequest {
 
-    private Long id;
-
     private FlightStatus status;
 
     @NotBlank(message = "Flight number cannot be blank")
@@ -27,6 +25,9 @@ public class CreateFlightRequest {
 
     @NotBlank(message = "Departure airport IATA cannot be blank")
     private String departureAirportIataCode;
+
+    @NotBlank(message = "Departure airport IATA cannot be blank")
+    private String arrivalAirportIataCode;
 
     @NotNull(message = "Departure time cannot be blank")
     private LocalDateTime departureTime;
