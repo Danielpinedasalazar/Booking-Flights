@@ -31,10 +31,10 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
     private final JavaMailSender javaMailSender;
     private final TemplateEngine templateEngine;
 
-    @Value("${frontendLoginUrl}")
+    @Value("frontendLoginUrl=http://daniel-airlines.vercel.app/login")
     private String frontendLoginUrl;
 
-    @Value("${viewBookingUrl}")
+    @Value("${viewBookingUrl:http://daniel-airlines.vercel.app/my-bookings}")
     private String viewBookingUrl;
 
     @Override
