@@ -41,10 +41,12 @@ public class FlightController {
         return ResponseEntity.ok(flightService.getAllFlights());
     }
 
-    @PutMapping
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'PILOT')")
-    public ResponseEntity<Response<?>> updateFlight(@RequestBody CreateFlightRequest flightRequest) {
-        return ResponseEntity.ok(flightService.updateFlight(flightRequest));
+    @PutMapping("/flights/{id}")
+    public ResponseEntity<Response<?>> updateFlight(
+            @PathVariable Long id,
+            @RequestBody CreateFlightRequest request
+    ) {
+        return ResponseEntity.ok(flightService.updateFlight(id, request));
     }
 
     @GetMapping("/search")

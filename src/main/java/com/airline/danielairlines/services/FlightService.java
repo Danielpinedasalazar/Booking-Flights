@@ -13,11 +13,17 @@ import java.util.List;
 public interface FlightService {
 
     Response<?> createFlight(CreateFlightRequest createFlightRequest);
-    Response<FlightDTO> getFlightById(Long id);
-    Response<List<FlightDTO>> getAllFlights();
-    Response<?> updateFlight(CreateFlightRequest createFlightRequest);
-    Response<List<FlightDTO>> searchFlights(String departureAirportIata, String arrivalAirportIata, FlightStatus flightStatus, LocalDate departureDate);
-    Response<List<City>> getAllCities();
-    Response<List<Country>> getAllCountries();
 
+    Response<FlightDTO> getFlightById(Long id);
+
+    Response<List<FlightDTO>> getAllFlights();
+
+    // ✅ ACTUALIZADO: Ahora recibe el ID como parámetro separado
+    Response<?> updateFlight(Long id, CreateFlightRequest createFlightRequest);
+
+    Response<List<FlightDTO>> searchFlights(String departureAirportIata, String arrivalAirportIata, FlightStatus flightStatus, LocalDate departureDate);
+
+    Response<List<City>> getAllCities();
+
+    Response<List<Country>> getAllCountries();
 }

@@ -49,28 +49,30 @@ public class AirportServiceImpl implements AirportsService {
     }
 
     @Override
-    public Response<?> updateAirport(AirportDTO airportDTO) {
-
-        Long id = airportDTO.getId();
-
+    public Response<?> updateAirport(Long id, AirportDTO airportDTO) {
+        // ✅ CORREGIDO: Ahora el id viene como parámetro, no del DTO
         Airport existingAirport = airportRepo.findById(id)
-                .orElseThrow(()-> new NotFoundException("Airport Not Found"));
+                .orElseThrow(() -> new NotFoundException("Airport Not Found"));
 
-
-        if (airportDTO.getCity() != null){
-            if (!airportDTO.getCity().getCountry().equals(existingAirport.getCountry())){
+        // Validar que la ciudad pertenece al país
+        if (airportDTO.getCity() != null) {
+            if (!airportDTO.getCity().getCountry().equals(existingAirport.getCountry())) {
                 throw new BadRequestException("CITY does not belong to the country");
             }
             existingAirport.setCity(airportDTO.getCity());
         }
 
-
-        if (airportDTO.getName() != null){
+        if (airportDTO.getName() != null) {
             existingAirport.setName(airportDTO.getName());
         }
 
-        if (airportDTO.getIataCode() != null){
+        if (airportDTO.getIataCode() != null) {
             existingAirport.setIataCode(airportDTO.getIataCode());
+        }
+
+        // ✅ OPCIONAL: Si quieres permitir actualizar el país
+        if (airportDTO.getCountry() != null) {
+            existingAirport.setCountry(airportDTO.getCountry());
         }
 
         airportRepo.save(existingAirport);
@@ -79,8 +81,6 @@ public class AirportServiceImpl implements AirportsService {
                 .statusCode(HttpStatus.OK.value())
                 .message("Airport updated Successfully")
                 .build();
-
-
     }
 
     @Override

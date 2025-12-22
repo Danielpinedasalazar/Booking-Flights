@@ -5,6 +5,7 @@ import com.airline.danielairlines.exceptions.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -28,18 +29,32 @@ public class SecurityFilter {
     private final CustomAccessDenialHandler customAccessDenialHandler;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
-        httpSecurity.csrf(AbstractHttpConfigurer::disable) //to disable _csrf
+        httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .exceptionHandling(ex ->
                         ex.accessDeniedHandler(customAccessDenialHandler)
                                 .authenticationEntryPoint(customAuthenticationEntryPoint))
                 .authorizeHttpRequests(req ->
-                        req.requestMatchers("/api/auth/**", "/api/airports/**", "/api/flights/**").permitAll()
-                        .anyRequest().authenticated())
+                        req
+                                // ✅ Rutas de autenticación - siempre públicas
+                                .requestMatchers("/api/auth/**").permitAll()
+
+                                // ✅ Airports - GET público, POST/PUT/DELETE requieren ADMIN
+                                .requestMatchers(HttpMethod.GET, "/api/airports/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/airports/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/api/airports/**").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/api/airports/**").hasAuthority("ADMIN")
+
+                                // ✅ Flights - GET público, búsquedas públicas
+                                // Nota: /api/flights/** ya cubre /cities y /countries
+                                .requestMatchers(HttpMethod.GET, "/api/flights/**").permitAll()
+
+                                // ✅ Cualquier otra petición requiere autenticación
+                                .anyRequest().authenticated()
+                )
                 .sessionManagement(mag -> mag.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
 

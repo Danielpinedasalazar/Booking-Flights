@@ -28,13 +28,13 @@ public class Flight {
     @Enumerated(EnumType.STRING)
     private FlightStatus status;
 
-    //Muchos vuelos pertenecen a un aeropuerto de salida
-    @ManyToOne
+    // ✅ OPTIMIZADO: Agregado fetch = FetchType.LAZY
+    // Se cargarán con @EntityGraph cuando los necesites
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "departure_airport_id")
     private Airport departureAirport;
 
-    //Muchos vuelos pertenecer a un aeropuerto de llegada
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "arrival_airport_id")
     private Airport arrivalAirport;
 
@@ -44,11 +44,12 @@ public class Flight {
 
     private BigDecimal basePrice;
 
-    //Muchos vuelos pertencen a un piloto
-    @ManyToOne
+    // ✅ OPTIMIZADO: Agregado fetch = FetchType.LAZY
+    @ManyToOne(fetch = FetchType.LAZY)
     private User assignedPilot;
 
-    //Un vuelo pertenece a muchas reservas
-    @OneToMany(mappedBy = "flight")
+    // ✅ CRÍTICO: Bookings DEBE ser LAZY para evitar el problema N+1
+    // Solo cárgalos cuando realmente los necesites (ej: detalle de vuelo)
+    @OneToMany(mappedBy = "flight", fetch = FetchType.LAZY)
     private List<Booking> bookings = new ArrayList<>();
 }

@@ -24,12 +24,17 @@ public class AirportController {
         return ResponseEntity.ok(airportsService.createAirport(airportDTO));
     }
 
-    @PutMapping
+    // ✅ CORREGIDO: Ahora usa /{id} en la URL
+    @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Response<?>> updateAirport(@Valid @RequestBody AirportDTO airportDTO) {
-        return ResponseEntity.ok(airportsService.updateAirport(airportDTO));
+    public ResponseEntity<Response<?>> updateAirport(
+            @PathVariable Long id,
+            @Valid @RequestBody AirportDTO airportDTO
+    ) {
+        return ResponseEntity.ok(airportsService.updateAirport(id, airportDTO));
     }
 
+    // ✅ GET endpoints - públicos (sin @PreAuthorize)
     @GetMapping
     public ResponseEntity<Response<List<AirportDTO>>> getAllAirports() {
         return ResponseEntity.ok(airportsService.getAllAirports());

@@ -12,6 +12,7 @@ public enum City {
     //Usa
     MIAMI(Country.USA),
     DALLAS(Country.USA),
+    WASHINGTON(Country.USA),
 
     //Uk
     LONDON(Country.UK),

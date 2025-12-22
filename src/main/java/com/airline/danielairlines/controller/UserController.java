@@ -20,7 +20,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @PutMapping
+    @PutMapping("/me")
     public ResponseEntity<Response<?>> updateMyAccount(@RequestBody UserDTO userDTO) {
         return ResponseEntity.ok(userService.updateMyAccount(userDTO));
     }

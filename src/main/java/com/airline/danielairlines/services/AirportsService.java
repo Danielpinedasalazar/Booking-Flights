@@ -9,7 +9,7 @@ public interface AirportsService {
 
     Response<?> createAirport(AirportDTO airportDTO);
 
-    Response<?> updateAirport(AirportDTO airportDTO);
+    Response<?> updateAirport(Long id, AirportDTO airportDTO);
 
     Response<List<AirportDTO>> getAllAirports();
 

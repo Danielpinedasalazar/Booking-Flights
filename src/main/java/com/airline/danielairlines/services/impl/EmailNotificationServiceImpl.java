@@ -100,20 +100,25 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
                     MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                     StandardCharsets.UTF_8.name()
             );
+
+            helper.setFrom("danielpinedasalazar19@gmail.com");
             helper.setTo(recipientEmail);
             helper.setSubject(subject);
             helper.setText(body, isHtml);
 
-            log.info("About to send email...");
+            log.info("About to send email to: {}", recipientEmail);
             javaMailSender.send(mimeMessage);
+            log.info("Email sent successfully to: {}", recipientEmail);
 
-            log.info("Email sent out");
-
+        } catch (jakarta.mail.AuthenticationFailedException ex) {
+            log.error("Authentication failed - Check your email credentials: {}", ex.getMessage());
+        } catch (jakarta.mail.MessagingException ex) {
+            log.error("Messaging exception: {}", ex.getMessage(), ex);
         } catch (Exception ex) {
-            log.error(ex.getMessage());
+            log.error("Unexpected error sending email: {}", ex.getMessage(), ex);
         }
 
-        //Save to the notification database table
+        // Save to the notification database table
         EmailNotification emailNotification = new EmailNotification();
         emailNotification.setRecipientEmail(recipientEmail);
         emailNotification.setSubject(subject);
@@ -121,8 +126,6 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
         emailNotification.setHtml(isHtml);
         emailNotification.setSendAt(LocalDateTime.now());
         emailNotification.setBooking(booking);
-
         emailNotificationRepo.save(emailNotification);
-
     }
 }

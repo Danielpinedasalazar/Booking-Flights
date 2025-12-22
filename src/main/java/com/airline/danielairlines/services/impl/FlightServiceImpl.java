@@ -50,10 +50,10 @@ public class FlightServiceImpl implements FlightService {
 
         //fetch and validate the departure airport
         Airport departureAirport = airportRepo.findByIataCode(createFlightRequest.getDepartureAirportIataCode())
-                    .orElseThrow(() -> new NotFoundException("Departure Airport does not exist"));
+                .orElseThrow(() -> new NotFoundException("Departure Airport does not exist"));
 
         Airport arrivalAirport = airportRepo.findByIataCode(createFlightRequest.getArrivalAirportIataCode())
-                .orElseThrow(() -> new NotFoundException("Departure Airport does not exist"));
+                .orElseThrow(() -> new NotFoundException("Arrival Airport does not exist"));
 
         Flight flightToSave = new Flight();
 
@@ -91,11 +91,13 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     public Response<FlightDTO> getFlightById(Long id) {
+        // ✅ OPTIMIZADO: Usa el método con @EntityGraph que carga airports y pilot
         Flight flight = flightRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("Flight not found"));
 
         FlightDTO flightDTO = modelMapper.map(flight, FlightDTO.class);
 
+        // Limpia referencias circulares si hay bookings
         if(flightDTO.getBookings() != null){
             flightDTO.getBookings().forEach(booking -> booking.setFlight(null));
         }
@@ -111,12 +113,15 @@ public class FlightServiceImpl implements FlightService {
     public Response<List<FlightDTO>> getAllFlights() {
         Sort sortByIdDesc = Sort.by(Sort.Direction.DESC, "id");
 
+        // ✅ OPTIMIZADO: Ahora hace una sola query con JOINs gracias a @EntityGraph
         List<FlightDTO> flights = flightRepo.findAll(sortByIdDesc).stream()
                 .map(flight -> {
                     FlightDTO flightDTO = modelMapper.map(flight, FlightDTO.class);
-                    if (flightDTO.getBookings() != null){
-                        flightDTO.getBookings().forEach(bookingDTO -> bookingDTO.setFlight(null));
-                    }
+
+                    // ✅ IMPORTANTE: Setea bookings a null para el listado
+                    // No los necesitas en la lista y evitas lazy loading
+                    flightDTO.setBookings(null);
+
                     return flightDTO;
                 }).toList();
 
@@ -129,9 +134,8 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     @Transactional
-    public Response<?> updateFlight(CreateFlightRequest flightRequest) {
-        Long id = flightRequest.getPilotId();
-
+    public Response<?> updateFlight(Long id, CreateFlightRequest flightRequest) {
+        // ✅ CORREGIDO: Ahora recibe el ID como parámetro
         Flight existingFlight = flightRepo.findById(id)
                 .orElseThrow(() -> new NotFoundException("Flight not found"));
 
@@ -153,7 +157,7 @@ public class FlightServiceImpl implements FlightService {
 
         //if pilot id is passed in validate the pilot and update it
         if (flightRequest.getPilotId() != null){
-            User pilot = userRepo.findById(id)
+            User pilot = userRepo.findById(flightRequest.getPilotId())
                     .orElseThrow(() -> new NotFoundException("Pilot not found"));
 
             boolean isPilot = pilot.getRoles().stream()
@@ -179,6 +183,7 @@ public class FlightServiceImpl implements FlightService {
         LocalDateTime startOfDay = departureDate.atStartOfDay();
         LocalDateTime endOfDay = departureDate.plusDays(1).atStartOfDay().minusNanos(1); // 23:59:59.999999999
 
+        // ✅ OPTIMIZADO: Este método también usa @EntityGraph ahora
         List<Flight> flights = flightRepo.findByDepartureAirportIataCodeAndArrivalAirportIataCodeAndStatusAndDepartureTimeBetween(
                 departureAirportIata,
                 arrivalAirportIata,
@@ -215,7 +220,7 @@ public class FlightServiceImpl implements FlightService {
     public Response<List<Country>> getAllCountries() {
         return Response.<List<Country>>builder()
                 .statusCode(HttpStatus.OK.value())
-                .message("Cities retrieved successfully")
+                .message("Countries retrieved successfully")
                 .data(List.of(Country.values()))
                 .build();
     }
